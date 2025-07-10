@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Folder</title>
+    <style>
+        body { text-align: center; font-family: Arial; }
+        img.logo { width: 200px; margin: 20px auto; }
+        input[type="file"] { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <img src="{{ url_for('static', filename='logo.png') }}" class="logo" alt="Logo">
+    <h2>Upload Image Folder</h2>
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="images" multiple webkitdirectory directory />
+        <br><br>
+        <input type="submit" value="Upload">
+    </form>
+</body>
+</html>
