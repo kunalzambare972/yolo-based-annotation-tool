@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOLO Annotation Tool</title>
+    <!--<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/annotate.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="project-info">
+                <h2 class="project-name"><i class="fas fa-project-diagram"></i> <span id="project-name-display">Project Name</span></h2>
+                <div class="project-stats">
+                    <div class="stat-item"><i class="fas fa-images"></i> <span id="image-count">0</span> images</div>
+                    <div class="stat-item"><i class="fas fa-tags"></i> <span id="annotation-count">0</span> annotations</div>
+                </div>
+            </div>
+            <div class="nav-controls">
+                <button id="back-btn"><a href="/" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i> Back to Projects
+                </a></button>
+                <button id="export-btn" class="btn">
+                    <i class="fas fa-file-export"></i> Export Dataset
+                </button>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-image"></i> Images</h3>
+                    <div class="nav-controls">
+                        <button id="prev-btn" class="btn btn-outline">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span id="image-counter">1 / 10</span>
+                            <input type="number" id="jump-input" min="1" max="100" value="1">
+                            <button id="go-btn" class="btn btn-outline">Go</button>
+                        </div>
+                        <button id="next-btn" class="btn btn-outline">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div id="image-list" class="image-list">
+                        <!-- Image items will be added dynamically -->
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-eye"></i> View Mode</h3>
+                    <div class="view-mode-toggle">
+                        <button class="view-mode-btn active" data-mode="original">
+                            <i class="fas fa-cube"></i> Original Annotations
+                        </button>
+                        <button class="view-mode-btn" data-mode="additions">
+                            <i class="fas fa-plus-circle"></i> User Additions
+                        </button>
+                        <button class="view-mode-btn" data-mode="modified">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="view-mode-btn" data-mode="all">
+                            <i class="fas fa-th"></i> All Annotations
+                        </button>
+                    </div>
+                    
+                    <div class="folder-status">
+                        <p>Annotation Folders:</p>
+                        <div class="folder-item">
+                            <i class="fas fa-folder"></i> <span>Original</span>: YOLO detections
+                        </div>
+                        <div class="folder-item">
+                            <i class="fas fa-folder"></i> <span>Additions</span>: User-added boxes
+                        </div>
+                        <div class="folder-item">
+                            <i class="fas fa-folder"></i> <span>Modified</span>: Edits & deletions
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-tools"></i> Controls</h3>
+                    
+                    <div class="annotation-controls">
+                        <button id="auto-annotate" class="btn">
+                            <i class="fas fa-magic"></i> Run Auto Detection
+                        </button>
+                        
+                        <div style="margin-top: 15px;">
+                            <button id="discard-all" class="btn btn-danger">
+                                <i class="fas fa-trash-alt"></i> Discard All
+                            </button>
+                            <button id="save-btn" class="btn btn-success" style="margin-top: 10px;">
+                                <i class="fas fa-save"></i> Save Annotations
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="instructions">
+                        <p><strong>Instructions:</strong></p>
+                        <ul style="padding-left: 20px; margin-top: 5px;">
+                            <li>Hold <span class="key-shortcut">Shift</span> + Click and drag to create a box</li>
+                            <li>Press <span class="key-shortcut">Delete</span> to remove selected box</li>
+                            <li>Press <span class="key-shortcut">S</span> to save annotations</li>
+                            <li>Use <span class="key-shortcut">←</span> / <span class="key-shortcut">→</span> to navigate images</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="canvas-container">
+                <div id="spinner" class="spinner"></div>
+                <div id="shift-warning" class="shift-warning">
+                    <i class="fas fa-pen"></i> Drawing mode enabled (Shift pressed)
+                </div>
+                <canvas id="canvas" width="800" height="600"></canvas>
+                <div id="empty-state" class="empty-state" style="display: none;">
+                    <i class="fas fa-images"></i>
+                    <h3>No images found</h3>
+                    <p>Upload images to start annotating.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="notification" class="notification"></div>
+    <script src="{{ url_for('static', filename='js/auto-annotate.js') }}"></script>
+<script src="{{ url_for('static', filename='js/annotate.js') }}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    initFromTemplate("{{ project_name }}", {{ images|tojson }});
+  });
+</script>
+</body>
+</html>
